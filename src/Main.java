@@ -7,9 +7,7 @@ public class Main {
 		// TODO Auto-generated method stub
 		GestorCoches gestor = new GestorCoches();
 
-		File fn = new File("coches.dat");
-		if (fn.exists()) 
-			gestor.cargarCoches(fn);
+		gestor.cargarCoches();
 		gestor.run();
 	}
 
