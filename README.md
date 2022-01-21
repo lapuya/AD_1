@@ -5,7 +5,9 @@ Esta actividad consiste en crear un programa sencillo que trabaje con archivos b
 * Eclipse
 
 ### Requisitos
-*Requerimiento 1*
+
+_*Requerimiento 1*_
+
 _Esta práctica consiste en la implementación de un programa Java para la gestión del almacén de coches en un concesionario. Los coches tendrán los siguientes atributos, id, matricula, marca, modelo y color._
 
 _El usuario interactuará con el programa a través del siguiente menú, que servirá como interfaz._
