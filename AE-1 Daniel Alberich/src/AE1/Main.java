@@ -83,29 +83,29 @@ public class Main  {
 				case 1:
 					//Añadir coche
 					
-					Coche coche = new Coche();
+					Coche c1 = new Coche();
 					
 					System.out.println("Introduce el ID del coche: ");
 					String id = sc.nextLine();								//No me deja meter ID
-					coche.setId(id);
+					c1.setId(id);
 					
 					System.out.println("Introduce la matrícula del coche: ");
 					String matricula = sc.nextLine();
-					coche.setMatricula(matricula);
+					c1.setMatricula(matricula);
 					
 					System.out.println("Introduce la marca del coche: ");
 					String marca = sc.nextLine();
-					coche.setMarca(marca);
+					c1.setMarca(marca);
 					
 					System.out.println("Introduce el modelo del coche: ");
 					String modelo = sc.nextLine();
-					coche.setModelo(modelo);
+					c1.setModelo(modelo);
 					
 					System.out.println("Introduce el color del coche: ");
 					String color = sc.nextLine();
-					coche.setColor(color);
+					c1.setColor(color);
 					
-					listaCoches.add(coche);
+					listaCoches.add(c1);
 					break;
 					
 					
@@ -116,7 +116,19 @@ public class Main  {
 					System.out.println("Introduce el ID del coche que deseas borrar:");
 					String borrar = sc.nextLine();
 					
-					//Buscar el objeto con ese ID por el Array (y borrarlo)
+					
+					
+					
+					for (Coche c : listaCoches) {
+						
+						if (c.getId().equals(borrar)){
+								listaCoches.remove(c);
+								System.out.println("Coche borrado.");							
+						}
+						else {
+							System.out.println("El ID introducido no corresponde con nungún coche.");
+						}		
+					}
 					
 					break;
 				case 3:
@@ -126,13 +138,26 @@ public class Main  {
 					System.out.println("Introduce el ID del coche que deseas buscar:");
 					String buscar = sc.nextLine();
 					
+					for (Coche c : listaCoches) {
+						
+						if (c.getId().equals(buscar)){
+								System.out.println("Coche encontrado:");
+								System.out.println(c.toString());							
+						}
+						else {
+							System.out.println("El ID introducido no corresponde con nungún coche.");
+						}
+						
+						
+					}
 					
-					//Lo mismo que para borrar pero leyendolo
+					
 					
 					
 					break;
 				case 4:
 					//listado (Como en la lectura)
+					
 					
 					//MAL, hay que leerlo del array para que los datos del listado incluyan los coches que se han metido antes de cerrar el programa.
 					

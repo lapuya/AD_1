@@ -15,6 +15,15 @@ public class Coche implements Serializable{
 	
 	
 	
+	public Coche(String id, String matricula, String marca, String modelo, String color) {
+		super();
+		this.id = id;
+		this.matricula = matricula;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.color = color;
+	}
+
 	public String getId() {
 		return id;
 	}
