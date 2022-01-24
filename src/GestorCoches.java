@@ -1,12 +1,12 @@
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,6 +14,7 @@ public class GestorCoches {
 	
 	private ArrayList<Coche> coches = new ArrayList<Coche>();
 	
+	//Metodo run-ejecutar del gestor de coches. Muesta el menú y llama métodos de acuerdo a la opción elegida
 	public void run() {
 		int op;
 		
@@ -40,12 +41,11 @@ public class GestorCoches {
 			}
 			op = menu();
 		}
+		//Cuando se sale del programa es cuando se actualiza el fichero .dat
 		actualizarFichero();
-
-		
 	}
 	
-	//REQUERIMIENTO 2
+	//REQUERIMIENTO 2: escribir en un ficherto .txt los datos con formato id-matricula-marca-modelo-color
 	private void exportarDatos() {
 		//Implementado con autoclose
 		try(FileWriter fw = new FileWriter("coches.txt");
@@ -67,20 +67,14 @@ public class GestorCoches {
 			e.printStackTrace();
 		} 
 		System.out.println("------ COCHES EXPORTADOS A ARCHIVO ------\n");
-		
 	}
-
+	
+	//Método que escribe en el .dat todo el array de objetos
 	private void actualizarFichero() {
 
-		try(FileOutputStream fichero = new FileOutputStream("coches.dat", true);
-				DataOutputStream escritor = new DataOutputStream (fichero);){
-			for (Coche c : coches) {
-				escritor.writeUTF(c.getId());
-				escritor.writeUTF(c.getMatricula());
-				escritor.writeUTF(c.getMarca());
-				escritor.writeUTF(c.getModelo());
-				escritor.writeUTF(c.getColor());
-			}
+		try(FileOutputStream fichero = new FileOutputStream("coches.dat");
+				ObjectOutputStream oos = new ObjectOutputStream (fichero);){
+			oos.writeObject(coches);
 			
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -88,13 +82,15 @@ public class GestorCoches {
 		}
 		
 	}
-
+	
+	//Método que muestra todos los coches
 	private void listarCoches() {
 		for(Coche c : coches) 
 			System.out.println(c.toString());
 		System.out.println("\n");
 	}
-
+	
+	//Método para buscar un coche por id
 	private void buscarCoche() {
 		Scanner sc = new Scanner (System.in);
 		String idBuscar;
@@ -114,7 +110,8 @@ public class GestorCoches {
 			System.out.println("------ COCHE NO ENCONTRADO ------\n");
 		
 	}
-
+	
+	//Método para borrar un coche por id
 	private void borrarCoche() {
 		Scanner sc = new Scanner (System.in);
 		String idBorrar;
@@ -137,28 +134,17 @@ public class GestorCoches {
 	
 	/***
 	 * Requerimiento 3: no puede repetirse id ni matricula
-	 * Se ha pensado en no dejar seguir al usuario hasta que introduzca un id o matricula valido
-	 * pero el usuario puede no querer seguir con la operacion asi que, si introduce un dato invalido
-	 * se cancela directamente y vuelve al menu
+	 * Pedimos los datos, llamamos a un metodo repetido que buscara en la lista
 	 */
 	private boolean añadirCoche() {
 		// TODO Auto-generated method stub
 		String id, matricula, marca, modelo, color;
 		Scanner sc = new Scanner (System.in);
 		
-		//Posible try-catch
 		System.out.println("Introduzca el id del coche:");
 		id = sc.nextLine();
-		if(repetido(id, "id")) {
-			System.out.println("--- ESTE COCHE YA EXISTE EN LA BASE DE DATOS ---\n");
-			return false;
-		}
 		System.out.println("Introduzca la matricula del coche:");
 		matricula = sc.nextLine();
-		if(repetido(matricula, "matricula")){
-			System.out.println("--- ESTE COCHE YA EXISTE EN LA BASE DE DATOS ---\n");
-			return false;
-		}
 		System.out.println("Introduzca la marca del coche: ");
 		marca = sc.nextLine();
 		System.out.println("Introduzca el modelo del coche: ");
@@ -167,30 +153,29 @@ public class GestorCoches {
 		color = sc.nextLine();
 		
 		Coche c = new Coche (id, matricula, marca, modelo, color);
-		coches.add(c);
+		if (repetido(c)) {
+			System.out.println("--- ESTE COCHE YA EXISTE EN LA BASE DE DATOS ---\n");
+			System.out.println("--- COMPRUEBA ID O MATRICULA ---\n");
+
+		}else
+			coches.add(c);
+		//coches.add(c);
 		
 		return true;
 	}
-
-	private boolean repetido(String info, String tipo) {
-		if (tipo.equals("id")) {
-			for(Coche c : coches) {
-				if (c.getId().equals(info))
-					return true;
-			}
-		} else if (tipo.equals("matricula")) {
-			for (Coche c : coches) {
-				if (c.getMatricula().equals(info))
-					return true;
+	
+	//Metodo que busca si un coche ya existe en la lista. Invoca el metodo equals()
+	private boolean repetido(Coche coche) {
+		for (Coche c : coches) {
+			if (c.equals(coche)) {
+				return true;
 			}
 		}
-		
 		return false;
-		
 	}
-
+	
+	//Método menu, que pide al usuario una opción y lo retorna
 	private int menu() {
-		// TODO Auto-generated method stub
 		int op;
 		Scanner sc = new Scanner(System.in);
 		
@@ -219,36 +204,24 @@ public class GestorCoches {
 		
 		return op;
 	}
-
+	
+	//Leemos el fichero .dat si existe. Si no, al final se creará el archivo
 	public void cargarCoches() {
 		File fn = new File("coches.dat");
-		if (fn.exists()) { //SE CREA AL FINAL (si se quita da error)
+		if (fn.exists()) {
 			try(FileInputStream fichero = new FileInputStream(fn);
-					DataInputStream lector = new DataInputStream(fichero);){
-				boolean eof = false;
-				while(!eof) {
-					try {
-						String id = lector.readUTF();
-						String matricula = lector.readUTF();
-						String marca = lector.readUTF();
-						String modelo = lector.readUTF();
-						String color = lector.readUTF();
-						Coche c = new Coche(id, matricula, marca, modelo, color);
-						coches.add(c);
-					} catch (EOFException e1) {
-						eof = true; 
-					} catch (IOException e2) {
-						System.out.println("Ha ocurrido un error inesperado.");
-						System.out.println(e2.getMessage());
-						break;
-					}
-				}
-			
+					ObjectInputStream ois = new ObjectInputStream(fichero);){
+				
+					coches = (ArrayList<Coche>)ois.readObject();
+					
+			}catch (FileNotFoundException e) {
+				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-				System.out.println(e.getMessage());
 				return;
-			}
+			}  catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}  
 		}
 		
 	}

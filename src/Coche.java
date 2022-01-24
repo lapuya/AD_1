@@ -1,8 +1,13 @@
+import java.io.Serializable;
+import java.util.Objects;
 
-public class Coche {
+
+public class Coche implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private String id, matricula, marca, modelo, color;
-
+	
+	//Constructor
 	public Coche(String id, String matricula, String marca, String modelo, String color) {
 		this.id = id;
 		this.matricula = matricula;
@@ -10,7 +15,8 @@ public class Coche {
 		this.modelo = modelo;
 		this.color = color;
 	}
-
+	
+	//GETTERS Y SETTERS
 	public String getId() {
 		return id;
 	}
@@ -57,6 +63,20 @@ public class Coche {
 				+ color + "]";
 	}
 	
-	
-	
+	//Métodos equals y hashCode para la comparación de objetos (no pueden coincidir en id ni matricula)
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coche coche = (Coche) o;
+
+        return this.getId().equals(coche.getId()) || this.getMatricula().equals(coche.matricula);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, matricula, marca, modelo, color);
+    }
+
 }
