@@ -39,8 +39,15 @@ Después, daremos de alta un par de coches y consultamos
 Probamos a buscar un coche que existe: 
 ![alt text](https://github.com/lapuya/AD_1/blob/master/resources/coche_encontrado.png)
 
+
+
 Ahora, uno que no existe:
 ![alt text](https://github.com/lapuya/AD_1/blob/master/resources/no_coche.png)
+
+
+Probaremos ahora a borrar:
+![alt text](https://github.com/lapuya/AD_1/blob/master/resources/borrar_coche.png)
+
 
 *Requerimiento 2*
 Exportamos:
